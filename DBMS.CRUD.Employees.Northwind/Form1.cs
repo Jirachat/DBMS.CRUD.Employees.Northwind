@@ -18,6 +18,18 @@ namespace DBMS.CRUD.Employees.Northwind
         string lastName = string.Empty;
         string title = string.Empty;
         string titleOfCourtesy = string.Empty;
+        DateTime birthDate;
+        DateTime hireDate;
+        string address = string.Empty;
+        string city = string.Empty;
+        string region = string.Empty;
+        string postalCode = string.Empty;
+        string country = string.Empty;
+        string homePhone = string.Empty;
+        string extension = string.Empty;
+        string photoPath = string.Empty; // เปลี่ยนเป็นเส้นทางรูปภาพ
+        string notes = string.Empty;
+        string reportsTo = string.Empty;
         private void dgvEmployees_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -40,11 +52,56 @@ namespace DBMS.CRUD.Employees.Northwind
 
         private void dgvEmployees_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            employeeID = Convert.ToInt32(dgvEmployees.CurrentRow.Cells[0].Value);
-            firstName = dgvEmployees.CurrentRow.Cells[1].Value.ToString();
-            lastName = dgvEmployees.CurrentRow.Cells[2].Value.ToString();
-            title = dgvEmployees.CurrentRow.Cells[3].Value.ToString();
-            titleOfCourtesy = dgvEmployees.CurrentRow.Cells[4].Value.ToString();
+            if (e.RowIndex >= 0) // ตรวจสอบว่าแถวที่คลิกมีข้อมูล
+            {
+                DataGridViewRow row = dgvEmployees.Rows[e.RowIndex];
+
+                employeeID = Convert.ToInt32(row.Cells["EmployeeID"].Value);
+                firstName = row.Cells["FirstName"].Value?.ToString() ?? string.Empty;
+                lastName = row.Cells["LastName"].Value?.ToString() ?? string.Empty;
+                title = row.Cells["Title"].Value?.ToString() ?? string.Empty;
+                titleOfCourtesy = row.Cells["TitleOfCourtesy"].Value?.ToString() ?? string.Empty;
+
+                // ตรวจสอบว่า BirthDate เป็น DBNull หรือไม่
+                if (row.Cells["BirthDate"].Value != DBNull.Value)
+                {
+                    birthDate = Convert.ToDateTime(row.Cells["BirthDate"].Value);
+                }
+                else
+                {
+                    birthDate = DateTime.MinValue; // หรือกำหนดค่าเริ่มต้นอื่น ๆ
+                }
+
+                // ตรวจสอบว่า HireDate เป็น DBNull หรือไม่
+                if (row.Cells["HireDate"].Value != DBNull.Value)
+                {
+                    hireDate = Convert.ToDateTime(row.Cells["HireDate"].Value);
+                }
+                else
+                {
+                    hireDate = DateTime.MinValue; // หรือกำหนดค่าเริ่มต้นอื่น ๆ
+                }
+
+                address = row.Cells["Address"].Value?.ToString() ?? string.Empty;
+                city = row.Cells["City"].Value?.ToString() ?? string.Empty;
+                region = row.Cells["Region"].Value?.ToString() ?? string.Empty;
+                postalCode = row.Cells["PostalCode"].Value?.ToString() ?? string.Empty;
+                country = row.Cells["Country"].Value?.ToString() ?? string.Empty;
+                homePhone = row.Cells["HomePhone"].Value?.ToString() ?? string.Empty;
+                extension = row.Cells["Extension"].Value?.ToString() ?? string.Empty;
+                photoPath = row.Cells["PhotoPath"].Value?.ToString() ?? string.Empty; // ดึงเส้นทางรูปภาพ
+                notes = row.Cells["Notes"].Value?.ToString() ?? string.Empty;
+
+                // ตรวจสอบว่า ReportsTo เป็น DBNull หรือไม่
+                if (row.Cells["ReportsTo"].Value != DBNull.Value)
+                {
+                    reportsTo = row.Cells["ReportsTo"].Value?.ToString() ?? string.Empty;
+                }
+                else
+                {
+                    reportsTo = string.Empty; // หรือกำหนดค่าเริ่มต้นอื่น ๆ
+                }
+            }
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -54,6 +111,7 @@ namespace DBMS.CRUD.Employees.Northwind
                 MessageBox.Show("โปรดเลือกข้อมูลที่จะปรับปรุงแก้ไข", "เกิดข้อผิดพลาด");
                 return;
             }
+
             frmEmployees f = new frmEmployees();
             f.Status = "update";
             f.EmployeeID = employeeID;
@@ -61,6 +119,18 @@ namespace DBMS.CRUD.Employees.Northwind
             f.LastName = lastName;
             f.Title = title;
             f.TitleOfCourtesy = titleOfCourtesy;
+            f.BirthDate = birthDate;
+            f.HireDate = hireDate;
+            f.Address = address;
+            f.City = city;
+            f.Region = region;
+            f.PostalCode = postalCode;
+            f.Country = country;
+            f.HomePhone = homePhone;
+            f.Extension = extension;
+            f.PhotoPath = photoPath; // ส่งค่าเส้นทางรูปภาพ
+            f.Notes = notes;
+            f.ReportsTo = reportsTo;
             f.ShowDialog();
             showdata();
         }
@@ -105,7 +175,7 @@ namespace DBMS.CRUD.Employees.Northwind
             {
                 conn.Close();
             }
-        }
+    }
 
         private void dgvEmployees_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
